@@ -1,5 +1,5 @@
 
-export class OrderProduct {
+export class OrderProductDto {
     constructor(productId: number, name: string, price: number, quantity: number, totalPrice: number) {
         this.productId = productId;
         this.name = name;

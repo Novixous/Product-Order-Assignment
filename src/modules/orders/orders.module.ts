@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
+import { databaseProviders } from 'src/core/database/database.providers';
 import { CartsService } from '../carts/carts.service';
 import { productsProvider } from '../products/products.providers';
 import { OrdersController } from './orders.controller';
 import { ordersProvider } from './orders.providers';
 import { OrdersService } from './orders.service';
+import { PuppeteerModule } from 'nest-puppeteer';
 
 @Module({
+  imports: [PuppeteerModule.forRoot()],
   controllers: [OrdersController],
-  providers: [OrdersService, CartsService, ...ordersProvider, ...productsProvider]
+  providers: [OrdersService, CartsService, ...ordersProvider, ...productsProvider, ...databaseProviders]
 })
 export class OrdersModule { }

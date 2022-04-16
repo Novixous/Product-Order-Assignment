@@ -1,6 +1,6 @@
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { User } from "../users/user.entity";
-import { OrderProduct } from "./dto/order_product.dto";
+import { OrderProductDto } from "./dto/order_product.dto";
 
 @Table
 export class Order extends Model<Order> {
@@ -9,13 +9,31 @@ export class Order extends Model<Order> {
         type: DataType.JSONB,
         allowNull: false,
     })
-    products: OrderProduct[];
+    products: OrderProductDto[];
 
     @Column({
         type: DataType.DOUBLE,
         allowNull: false,
     })
     totalPrice: number;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
+    customerAddress: string;
+
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: false,
+    })
+    customerZipcode: number;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
+    customerCountry: string;
 
     @ForeignKey(() => User)
     @Column({
