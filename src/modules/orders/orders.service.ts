@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, ParseArrayPipe, UseInterceptors } from '@nestjs/common';
 import { Transaction } from 'sequelize';
 import { Op } from 'sequelize';
 import { ORDER_REPOSITORY, PRODUCT_REPOSITORY } from 'src/core/constants';
@@ -17,6 +17,8 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as moment from 'moment';
 import { OrderDetailDto } from './dto/order_detail.dto';
+import { OrderFilterDto } from './dto/order_filter.dto';
+import { Parser } from 'json2csv';
 
 @Injectable()
 export class OrdersService {
@@ -49,6 +51,29 @@ export class OrdersService {
             include: [{ model: User, attributes: { exclude: ['password'] } }],
             where
         });
+    }
+
+    async getCSV(filter: OrderFilterDto, userId: number) {
+        const { where, attributes } = filter;
+        if (userId in where) {
+            where.userId = userId;
+        }
+        const orders = await this.orderRepository.findAll<Order>({
+            include: [{ model: User, attributes: { exclude: ['password'] } }],
+            where,
+            attributes,
+            raw: true
+        });
+        const parser = new Parser({ fields: attributes });
+        const data = [];
+        orders.forEach(order => {
+            let tmp = {};
+            attributes.forEach(field => {
+                tmp[field] = order[field];
+            })
+            data.push(tmp);
+        })
+        return parser.parse(data);
     }
 
     async findOne(id: number, userId: number): Promise<Order> {

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Injectable, Param, Post, Request, Response, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Response as ExpRes } from 'express';
+import { Response as ExpRes, response } from 'express';
 import { Transaction } from 'sequelize';
 import { TransactionParam } from 'src/core/database/transaction-param.decorator';
 import { TransactionInterceptor } from 'src/core/database/transaction.interceptor';
@@ -10,6 +10,7 @@ import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { Role } from '../users/dto/user.dto';
 import { OrderDetailDto } from './dto/order_detail.dto';
+import { OrderFilterDto } from './dto/order_filter.dto';
 import { OrdersService } from './orders.service';
 
 @Injectable()
@@ -58,5 +59,20 @@ export class OrdersController {
         });
         stream.pipe(response);
 
+    }
+
+    @Post('/csv')
+    @Roles(Role.USER)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    async getCSV(@Request() req, @Body() orderFilter: OrderFilterDto, @Response() response: ExpRes) {
+        const csv = await this.orderService.getCSV(orderFilter, req.user.id);
+        response.set({
+            'Content-Disposition': 'attachment; filename=orders.csv',
+            // prevent cache
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': 0,
+        })
+        response.status(200).send(csv);
     }
 }
