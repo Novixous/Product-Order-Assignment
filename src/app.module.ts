@@ -25,17 +25,15 @@ import { productsProvider } from './modules/products/products.providers';
     }),
     CacheModule.register({
       store: redisStore,
-      socket: {
-        host: 'localhost',
-        port: 6379
-      },
+      host: 'redis_local',
+      port: 6379,
       isGlobal: true
     }),
     CartsModule,
     OrdersModule],
   controllers: [],
   providers: [
-    AppService, 
+    AppService,
     AuthService,
     ...productsProvider
   ],

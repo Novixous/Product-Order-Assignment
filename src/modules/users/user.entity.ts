@@ -22,14 +22,14 @@ export class User extends Model<User> {
     password: string;
 
     @Column({
-        type: DataType.ENUM,
+        type: DataType.STRING,
         values: ['male', 'female'],
         allowNull: false,
     })
     gender: string;
 
     @Column({
-        type: DataType.ENUM,
+        type: DataType.STRING,
         values: ['vendor', 'user'],
         allowNull: false,
     })

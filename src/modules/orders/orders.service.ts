@@ -10,8 +10,9 @@ import { Role } from '../users/dto/user.dto';
 import { User } from '../users/user.entity';
 import { OrderProductDto } from './dto/order_product.dto';
 import { Order } from './order.entity';
-import { InjectBrowser } from 'nest-puppeteer';
-import type { Browser } from 'puppeteer';
+// import { InjectBrowser } from 'nest-puppeteer';
+// import type { Browser } from 'puppeteer';
+import * as puppeteer from 'puppeteer';
 import hbs from 'handlebars';
 import * as path from 'path';
 import * as fs from 'fs-extra';
@@ -25,7 +26,7 @@ export class OrdersService {
     constructor(
         @Inject(ORDER_REPOSITORY) private readonly orderRepository: typeof Order,
         @Inject(PRODUCT_REPOSITORY) private readonly productRepository: typeof Product,
-        @InjectBrowser() private readonly browser: Browser,
+        // @InjectBrowser() private readonly browser: Browser,
         private readonly cartService: CartsService) { }
 
     async getRecepitPDF(userId: number, orderId: number): Promise<Buffer> {
@@ -142,7 +143,8 @@ export class OrdersService {
     }
 
     async generatePDF(data: any): Promise<Buffer> {
-        const page = await this.browser.newPage();
+        const browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser', args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-extensions"] })
+        const page = await browser.newPage();
         const content = await this.compile('receipt.template', data);
 
         await page.setContent(content);

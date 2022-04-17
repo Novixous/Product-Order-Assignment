@@ -17,17 +17,19 @@ export class AppService implements OnApplicationBootstrap {
 
   async seed() {
     let vendors = []
-    for (const u of SEED_USERS) {
-      console.log('Seeding user data.');
-      const { user } = await this.authService.create(u);
-      if (user.role === Role.VENDOR) {
-        vendors.push(user);
+    if (await this.productRepository.count() === 0) {
+      for (const u of SEED_USERS) {
+        console.log('Seeding user data.');
+        const { user } = await this.authService.create(u);
+        if (user.role === Role.VENDOR) {
+          vendors.push(user);
+        }
+        console.log('Completed Seeding users.');
       }
-      console.log('Completed Seeding users.');
-    }
-    for (const prod of SEED_PRODUCTS) {
-      let index = Math.floor(Math.random() * (vendors.length - 0) + 0);
-      this.productRepository.create({ ...prod, vendorUserId: vendors[index].id })
+      for (const prod of SEED_PRODUCTS) {
+        let index = Math.floor(Math.random() * (vendors.length - 0) + 0);
+        this.productRepository.create({ ...prod, vendorUserId: vendors[index].id })
+      }
     }
   }
 }

@@ -3,44 +3,37 @@ volumes:
   postgres_data_local: {}
   postgres_backup_local: {}
 services:
-  db:
-    image: postgres:latest
-    container_name: porstgresql
-    restart: always
-    ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=sa123456
-    volumes:
-      - postgres_data_local:/var/lib/postgresql/data
-      - postgres_backup_local:/backups
-  main:
-    build: .
-    image: api_local
-    container_name: api_local
-    restart: always
-    depends_on:
-      - db
-      - redis
-    links:
-      - db
-      - redis
-    volumes:
-      - ./:/home/node/app
-      - /usr/src/app/node_modules
-    env_file:
-      - ./.env
-    ports:
-      - '3000:3000'
-    command: 'npm run start:debug'
-  redis:
-    restart: always
-    image: redis
-    container_name: redis-server
-    ports:
-      - '6379:6379'
-    env_file:
-      - ./.env
-networks:
-    nesjs-network:
+    db_local:
+      image: postgres:latest
+      container_name: db_local
+      restart: always
+      ports:
+        - '5432:5432'
+      environment:
+        POSTGRES_USER: postgres # The PostgreSQL user (useful to connect to the database)
+        POSTGRES_PASSWORD: sa123456 # The PostgreSQL password (useful to connect to the database)
+        POSTGRES_DB: product_order_dev # The PostgreSQL default database (automatically created at first launch)
+      volumes:
+        - postgres_data_local:/var/lib/postgresql/data
+        - postgres_backup_local:/backups
+    main:
+      build: .
+      image: api_local
+      container_name: api_local
+      restart: always
+      depends_on:
+        - db
+        - redis
+      volumes:
+        - ./:/home/node/app
+      env_file:
+        - ./.env
+      ports:
+        - '3000:3000'
+      command: sh -c "node node_modules/puppeteer/install.js && npm run start:dev"
+    redis_local:
+      restart: always
+      image: redis
+      container_name: redis_local
+      ports:
+        - '6379:6379'
