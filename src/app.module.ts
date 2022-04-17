@@ -1,16 +1,16 @@
 import { CacheModule, Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { DatabaseModule } from './core/database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductsModule } from './modules/products/products.module';
-import { productsProvider } from './modules/products/products.providers';
 import { AuthService } from './modules/auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { CartsModule } from './modules/carts/carts.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import * as redisStore from 'cache-manager-redis-store';
+import { AppService } from './app.service';
+import { productsProvider } from './modules/products/products.providers';
 
 @Module({
   imports: [
@@ -35,7 +35,9 @@ import * as redisStore from 'cache-manager-redis-store';
     OrdersModule],
   controllers: [],
   providers: [
-    AppService, AuthService, ...productsProvider
+    AppService, 
+    AuthService,
+    ...productsProvider
   ],
 })
 export class AppModule { }
