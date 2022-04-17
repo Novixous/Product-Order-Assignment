@@ -27,3 +27,11 @@ SEED=false # set to true if you want to have some dummy data
 
 # 4. Access http://localhost:3000/api/ for swagger
 ```
+
+## Unit Test
+
+```bash
+# 1. run 'npm install' locally to install all dependencies
+
+# 2. then run 'npm run test:cov' for coverage test
+```
