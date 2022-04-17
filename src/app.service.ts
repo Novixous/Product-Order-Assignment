@@ -2,7 +2,7 @@ import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { PRODUCT_REPOSITORY } from './core/constants';
 import { AuthService } from './modules/auth/auth.service';
 import { Product } from './modules/products/product.entity';
-import { Gender, Role, UserDto } from './modules/users/dto/user.dto';
+import { Role } from './modules/users/dto/user.dto';
 import { SEED_PRODUCTS } from './seed/product.seed';
 import { SEED_USERS } from './seed/user.seed';
 
