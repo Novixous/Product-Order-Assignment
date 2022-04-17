@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PRODUCT_REPOSITORY } from 'src/core/constants';
+import { PRODUCT_REPOSITORY } from '../../core/constants';
 import { Role } from '../users/dto/user.dto';
 import { User } from '../users/user.entity';
 import { ProductDto } from './dto/product.dto';
@@ -9,15 +9,14 @@ import { Product } from './product.entity';
 export class ProductsService {
     constructor(@Inject(PRODUCT_REPOSITORY) private readonly productRepository: typeof Product) { }
 
-    async findAll(user: User): Promise<Product[]> {
-        const { role } = user;
+    async findAll(userId: number, role: Role): Promise<Product[]> {
         let where = {};
         switch (role) {
             case Role.USER:
                 where = { isDeleted: false }
                 break;
             case Role.VENDOR:
-                where = { vendorUserId: user.id }
+                where = { vendorUserId: userId }
                 break;
         }
         return await this.productRepository.findAll<Product>({
@@ -27,15 +26,14 @@ export class ProductsService {
 
     }
 
-    async findOne(id, user: User): Promise<Product> {
-        const { role } = user;
+    async findOne(id: number, userId: number, role: Role): Promise<Product> {
         let where = {};
         switch (role) {
             case Role.USER:
                 where = { isDeleted: false }
                 break;
             case Role.VENDOR:
-                where = { vendorUserId: user.id }
+                where = { vendorUserId: userId }
                 break;
         }
         return await this.productRepository.findOne({

@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNotEmptyObject } from "class-validator";
-import { CartDto } from "src/modules/carts/dto/cart.dto";
+import { CartDto } from "../../carts/dto/cart.dto";
 
 export class OrderDetailDto {
     @ApiProperty({ type: CartDto })

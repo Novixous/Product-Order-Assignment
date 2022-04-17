@@ -1,7 +1,7 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { Op } from 'sequelize';
-import { PRODUCT_REPOSITORY } from 'src/core/constants';
+import { PRODUCT_REPOSITORY } from '../../core/constants';
 import { Product } from '../products/product.entity';
 import { CartDto, CartItem } from './dto/cart.dto';
 

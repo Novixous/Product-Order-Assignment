@@ -1,12 +1,11 @@
-import { Body, CACHE_MANAGER, Controller, ForbiddenException, Get, Inject, Injectable, NotFoundException, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, Injectable, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Cache } from 'cache-manager';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { Role } from '../users/dto/user.dto';
 import { CartsService } from './carts.service';
-import { CartDto, CartItem } from './dto/cart.dto';
+import { CartDto } from './dto/cart.dto';
 
 @Injectable()
 @ApiBearerAuth()

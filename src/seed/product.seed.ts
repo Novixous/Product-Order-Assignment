@@ -1,4 +1,4 @@
-import { ProductDto } from "src/modules/products/dto/product.dto";
+import { ProductDto } from "../modules/products/dto/product.dto";
 
 export const SEED_PRODUCTS = [
     new ProductDto('Product 1', 125.5, 30, 'Lorem ipsum', false),

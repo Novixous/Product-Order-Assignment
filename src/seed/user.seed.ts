@@ -1,4 +1,4 @@
-import { Gender, Role, UserDto } from "src/modules/users/dto/user.dto";
+import { Gender, Role, UserDto } from "../modules/users/dto/user.dto";
 
 export const SEED_USERS = [
     new UserDto('First vendor', 'vendor1g@gmail.com', '123456', Gender.MALE, Role.VENDOR),

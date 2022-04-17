@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
-import { Order } from 'src/modules/orders/order.entity';
-import { Post } from '../../modules/posts/post.entity';
+import { Order } from '../../modules/orders/order.entity';
 import { Product } from '../../modules/products/product.entity';
 import { User } from '../../modules/users/user.entity';
 import { SEQUELIZE, DEVELOPMENT, TEST, PRODUCTION } from '../constants';
@@ -25,7 +24,7 @@ export const databaseProviders = [{
         }
         const sequelize = new Sequelize(config);
         //models go here
-        sequelize.addModels([User, Post, Product, Order]);
+        sequelize.addModels([User, Product, Order]);
         await sequelize.sync();
         return sequelize;
     },

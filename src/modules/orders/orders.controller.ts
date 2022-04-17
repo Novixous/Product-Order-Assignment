@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Injectable, Param, Post, Request, Response, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Response as ExpRes, response } from 'express';
+import { Response as ExpRes } from 'express';
 import { Transaction } from 'sequelize';
-import { TransactionParam } from 'src/core/database/transaction-param.decorator';
-import { TransactionInterceptor } from 'src/core/database/transaction.interceptor';
+import { TransactionParam } from '../../core/database/transaction-param.decorator';
+import { TransactionInterceptor } from '../../core/database/transaction.interceptor';
 import { Readable } from 'stream';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
@@ -25,7 +25,7 @@ export class OrdersController {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     async findAll(@Request() req) {
         // get all products in the db
-        return await this.orderService.findAll(req.user);
+        return await this.orderService.findAll(req.user.id, req.user.role);
     }
 
     @Post()
@@ -41,7 +41,7 @@ export class OrdersController {
     @Roles(Role.USER)
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     async getReceiptPDF(@Param('orderId') orderId: number, @Request() req, @Response() response: ExpRes) {
-        const buffer = await this.orderService.getRecepitPDF(req.user, orderId);
+        const buffer = await this.orderService.getRecepitPDF(req.user.id, orderId);
         const stream = new Readable();
         stream.push(buffer);
         stream.push(null);

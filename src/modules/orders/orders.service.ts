@@ -1,9 +1,9 @@
-import { BadRequestException, Inject, Injectable, ParseArrayPipe, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UseInterceptors } from '@nestjs/common';
 import { Transaction } from 'sequelize';
 import { Op } from 'sequelize';
-import { ORDER_REPOSITORY, PRODUCT_REPOSITORY } from 'src/core/constants';
-import { TransactionParam } from 'src/core/database/transaction-param.decorator';
-import { TransactionInterceptor } from 'src/core/database/transaction.interceptor';
+import { ORDER_REPOSITORY, PRODUCT_REPOSITORY } from '../../core/constants';
+import { TransactionParam } from '../../core/database/transaction-param.decorator';
+import { TransactionInterceptor } from '../../core/database/transaction.interceptor';
 import { CartsService } from '../carts/carts.service';
 import { Product } from '../products/product.entity';
 import { Role } from '../users/dto/user.dto';
@@ -28,23 +28,22 @@ export class OrdersService {
         @InjectBrowser() private readonly browser: Browser,
         private readonly cartService: CartsService) { }
 
-    async getRecepitPDF(user: User, orderId: number): Promise<Buffer> {
-        const order = await this.findOne(orderId, user.id);
+    async getRecepitPDF(userId: number, orderId: number): Promise<Buffer> {
+        const order = await this.findOne(orderId, userId);
         const date = moment(order.createdAt).utcOffset('+0000').format('DD/MM/YYYY HH:mm:ss z');
         const data = { date, order: { ...order } }
         return await this.generatePDF(data);
     }
 
-    async findAll(user: User): Promise<Order[]> {
-        const { role } = user;
+    async findAll(userId: number, role: Role): Promise<Order[]> {
         let where = {};
         switch (role) {
             case Role.USER:
-                where = { userId: user.id }
+                where = { userId: userId }
                 break;
             case Role.VENDOR:
                 //not yet implemented
-                where = { userId: user.id }
+                where = { userId: userId }
                 break;
         }
         return await this.orderRepository.findAll<Order>({
@@ -54,8 +53,9 @@ export class OrdersService {
     }
 
     async getCSV(filter: OrderFilterDto, userId: number) {
-        const { where, attributes } = filter;
-        if (userId in where) {
+        const { where } = filter;
+        const attributes = filter.attributes.map(att => att.toString())
+        if ('userId' in where) {
             where.userId = userId;
         }
         const orders = await this.orderRepository.findAll<Order>({

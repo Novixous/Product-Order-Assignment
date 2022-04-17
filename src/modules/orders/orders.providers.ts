@@ -1,4 +1,4 @@
-import { ORDER_REPOSITORY } from "src/core/constants";
+import { ORDER_REPOSITORY } from "../../core/constants";
 import { Order } from "./order.entity";
 
 export const ordersProvider = [{

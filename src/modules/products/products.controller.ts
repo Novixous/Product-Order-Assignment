@@ -19,7 +19,7 @@ export class ProductsController {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     async findAll(@Request() req) {
         // get all products in the db
-        return await this.productService.findAll(req.user);
+        return await this.productService.findAll(req.user.id, req.user.role);
     }
 
     @Get(':id')
@@ -27,7 +27,7 @@ export class ProductsController {
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     async findOne(@Param('id') id: number, @Request() req): Promise<Product> {
         // find the product with this id
-        const post = await this.productService.findOne(id, req.user);
+        const post = await this.productService.findOne(id, req.user.id, req.user.role);
 
         // if the post doesn't exit in the db, throw a 404 error
         if (!post) {
@@ -70,5 +70,5 @@ export class ProductsController {
         return deletedProduct;
     }
 
-    
+
 }
